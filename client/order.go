@@ -37,7 +37,7 @@ type GetOrdersResponse struct {
 	Data struct {
 		Count  int `json:"count"`
 		Orders []struct {
-			VoucherPlatform            int      `json:"voucher_platform"`
+			VoucherPlatform            float64  `json:"voucher_platform"`
 			Voucher                    float64  `json:"voucher"`
 			OrderNumber                int64    `json:"order_number"`
 			VoucherSeller              int      `json:"voucher_seller"`
@@ -102,7 +102,7 @@ type GetOrderItemsResponse struct {
 		PaidPrice             float64 `json:"paid_price"`
 		ProductMainImage      string  `json:"product_main_image"`
 		TaxAmount             float64 `json:"tax_amount"`
-		VoucherPlatform       int     `json:"voucher_platform"`
+		VoucherPlatform       float64 `json:"voucher_platform"`
 		Reason                string  `json:"reason"`
 		ProductDetailURL      string  `json:"product_detail_url"`
 		PromisedShippingTime  string  `json:"promised_shipping_time"`
@@ -165,7 +165,7 @@ func (s *LazadaClient) GetOrders(params GetOrdersParams) (*GetOrdersResponse, er
 
 	request.URL.RawQuery = q.Encode()
 
-	log.Println(request.URL.String())
+	log.Println("[Client] query string:", request.URL.String())
 
 	response, err := client.Do(request)
 	if err != nil {
@@ -176,10 +176,10 @@ func (s *LazadaClient) GetOrders(params GetOrdersParams) (*GetOrdersResponse, er
 	var jsonRes GetOrdersResponse
 	err = json.NewDecoder(response.Body).Decode(&jsonRes)
 	if err != nil {
-		log.Println(err)
+		log.Printf("[Client] decode error: %s\n", err.Error())
 		return nil, err
 	}
-	log.Printf("GetOrders response: %v\n", jsonRes)
+
 	return &jsonRes, nil
 }
 
@@ -208,7 +208,7 @@ func (s *LazadaClient) GetOrderItems(params GetOrderItemsParams) (*GetOrderItems
 
 	request.URL.RawQuery = q.Encode()
 
-	log.Println(request.URL.String())
+	log.Println("[Client] query string:", request.URL.String())
 
 	response, err := client.Do(request)
 	if err != nil {
@@ -222,6 +222,8 @@ func (s *LazadaClient) GetOrderItems(params GetOrderItemsParams) (*GetOrderItems
 		log.Println(err)
 		return nil, err
 	}
-	log.Printf("GetOrderItems response: %v\n", jsonRes)
+
+	res, _ := json.Marshal(jsonRes)
+	log.Printf("GetOrderItems response: %s\n", string(res))
 	return &jsonRes, nil
 }
