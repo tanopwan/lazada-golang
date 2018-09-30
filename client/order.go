@@ -93,6 +93,7 @@ type GetOrdersResponse struct {
 		} `json:"orders"`
 	} `json:"data"`
 	Code      string `json:"code"`
+	Message   string `json:"message"`
 	RequestID string `json:"request_id"`
 }
 
@@ -149,7 +150,6 @@ func (s *LazadaClient) GetOrders(params GetOrdersParams) (*GetOrdersResponse, er
 
 	t := time.Now()
 
-	client := &http.Client{}
 	request, _ := http.NewRequest(cgetMethod, apiEndpoint+uri, nil)
 	q := request.URL.Query()
 	q.Add(cappKey, s.appKey)
@@ -165,22 +165,50 @@ func (s *LazadaClient) GetOrders(params GetOrdersParams) (*GetOrdersResponse, er
 
 	request.URL.RawQuery = q.Encode()
 
-	log.Println("[Client] query string:", request.URL.String())
+	log.Println("[Client] query orders:", request.URL.String())
 
-	response, err := client.Do(request)
+	response, err := s.client.Do(request)
 	if err != nil {
-		log.Println(err)
+		log.Println("[Client] query failed with reason:", err.Error())
 	}
 	defer response.Body.Close()
+
+	// buf, err := ioutil.ReadAll(response.Body)
+	// if err != nil {
+	// 	log.Println("[Client] read body failed with reason:", err)
+	// 	return nil, err
+	// }
+
+	// log.Printf("[Client] body response: %s\n", string(buf))
+
+	// responseCode := make(map[string]string)
+	// if err = json.Unmarshal(buf, &responseCode); err != nil {
+	// 	log.Printf("[Client] decode error: %s\n", err.Error())
+	// 	return nil, err
+	// }
+
+	// if responseCode["code"] == "0" {
+	// 	var jsonRes GetOrdersResponse
+	// 	if err = json.Unmarshal(buf, &jsonRes); err != nil {
+	// 		log.Printf("[Client] decode error: %s\n", err.Error())
+	// 		return nil, err
+	// 	}
+
+	// 	return &jsonRes, nil
+	// }
 
 	var jsonRes GetOrdersResponse
 	err = json.NewDecoder(response.Body).Decode(&jsonRes)
 	if err != nil {
-		log.Printf("[Client] decode error: %s\n", err.Error())
+		log.Println("[Client] decode failed with reason:", err.Error())
 		return nil, err
 	}
 
-	return &jsonRes, nil
+	if jsonRes.Code == "0" {
+		return &jsonRes, nil
+	}
+
+	return nil, fmt.Errorf("code is not success : %s", jsonRes.Code)
 }
 
 // GetOrderItemsParams uses when GetOrderItems
