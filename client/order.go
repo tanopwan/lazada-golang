@@ -3,6 +3,7 @@ package client
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -173,34 +174,17 @@ func (s *LazadaClient) GetOrders(params GetOrdersParams) (*GetOrdersResponse, er
 	}
 	defer response.Body.Close()
 
-	// buf, err := ioutil.ReadAll(response.Body)
-	// if err != nil {
-	// 	log.Println("[Client] read body failed with reason:", err)
-	// 	return nil, err
-	// }
+	buf, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Println("[Client] read raw body failed with reason:", err)
+		return nil, err
+	}
 
-	// log.Printf("[Client] body response: %s\n", string(buf))
-
-	// responseCode := make(map[string]string)
-	// if err = json.Unmarshal(buf, &responseCode); err != nil {
-	// 	log.Printf("[Client] decode error: %s\n", err.Error())
-	// 	return nil, err
-	// }
-
-	// if responseCode["code"] == "0" {
-	// 	var jsonRes GetOrdersResponse
-	// 	if err = json.Unmarshal(buf, &jsonRes); err != nil {
-	// 		log.Printf("[Client] decode error: %s\n", err.Error())
-	// 		return nil, err
-	// 	}
-
-	// 	return &jsonRes, nil
-	// }
+	log.Printf("[Client] body raw response: %s\n", string(buf))
 
 	var jsonRes GetOrdersResponse
-	err = json.NewDecoder(response.Body).Decode(&jsonRes)
-	if err != nil {
-		log.Println("[Client] decode failed with reason:", err.Error())
+	if err = json.Unmarshal(buf, &jsonRes); err != nil {
+		log.Printf("[Client] decode error: %s\n", err.Error())
 		return nil, err
 	}
 
