@@ -2,9 +2,11 @@ package client
 
 import "net/http"
 
+var authEndpoint = "https://auth.lazada.com/rest"
 var apiEndpoint = "https://api.lazada.co.th/rest"
 var getOrdersURI = "/orders/get"
 var getOrderItemsURI = "/order/items/get"
+var postAuthURI = "/auth/token/create"
 
 // HTTPClient is client that implements Do
 type HTTPClient interface {

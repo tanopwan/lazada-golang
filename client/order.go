@@ -182,17 +182,17 @@ func (s *LazadaClient) GetOrders(params GetOrdersParams) (*GetOrdersResponse, er
 
 	log.Printf("[Client] body raw response: %s\n", string(buf))
 
-	var jsonRes GetOrdersResponse
-	if err = json.Unmarshal(buf, &jsonRes); err != nil {
+	var res GetOrdersResponse
+	if err = json.Unmarshal(buf, &res); err != nil {
 		log.Printf("[Client] decode error: %s\n", err.Error())
 		return nil, err
 	}
 
-	if jsonRes.Code == "0" {
-		return &jsonRes, nil
+	if res.Code == "0" {
+		return &res, nil
 	}
 
-	return nil, fmt.Errorf("code is not success : %s", jsonRes.Code)
+	return nil, fmt.Errorf("code is not success : %s", res.Code)
 }
 
 // GetOrderItemsParams uses when GetOrderItems
