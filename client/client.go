@@ -6,6 +6,7 @@ var authEndpoint = "https://auth.lazada.com/rest"
 var apiEndpoint = "https://api.lazada.co.th/rest"
 var getOrdersURI = "/orders/get"
 var getOrderItemsURI = "/order/items/get"
+var getProductsURI = "/products/get"
 var postAuthURI = "/auth/token/create"
 
 // HTTPClient is client that implements Do

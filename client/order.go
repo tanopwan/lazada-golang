@@ -19,6 +19,7 @@ const (
 	csignMethod   = "sign_method"
 	csha256       = "sha256"
 	ccreatedAfter = "created_after"
+	cfilter       = "filter"
 	corderID      = "order_id"
 	climit        = "limit"
 	coffset       = "offset"
