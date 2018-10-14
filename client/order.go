@@ -11,24 +11,29 @@ import (
 )
 
 const (
-	cgetMethod    = "GET"
-	cappKey       = "app_key"
-	ctimestamp    = "timestamp"
-	caccessToken  = "access_token"
-	csign         = "sign"
-	csignMethod   = "sign_method"
-	csha256       = "sha256"
-	ccreatedAfter = "created_after"
-	cfilter       = "filter"
-	corderID      = "order_id"
-	climit        = "limit"
-	coffset       = "offset"
+	cgetMethod     = "GET"
+	cappKey        = "app_key"
+	ctimestamp     = "timestamp"
+	caccessToken   = "access_token"
+	csign          = "sign"
+	csignMethod    = "sign_method"
+	csha256        = "sha256"
+	ccreatedAfter  = "created_after"
+	ccreatedBefore = "created_before"
+	cupdatedAfter  = "update_after"
+	cupdatedBefore = "update_before"
+	cfilter        = "filter"
+	corderID       = "order_id"
+	climit         = "limit"
+	coffset        = "offset"
 )
 
 // GetOrdersParams uses when CallGetOrders
 type GetOrdersParams struct {
-	CreatedAfter string
-	UpdatedAfter string
+	CreatedAfter  string
+	CreatedBefore string
+	UpdatedAfter  string
+	UpdatedBefore string
 
 	Limit  string
 	Offset string
@@ -42,7 +47,7 @@ type GetOrdersResponse struct {
 			VoucherPlatform            float64  `json:"voucher_platform"`
 			Voucher                    float64  `json:"voucher"`
 			OrderNumber                int64    `json:"order_number"`
-			VoucherSeller              int      `json:"voucher_seller"`
+			VoucherSeller              float64  `json:"voucher_seller"`
 			CreatedAt                  string   `json:"created_at"`
 			VoucherCode                string   `json:"voucher_code"`
 			GiftOption                 bool     `json:"gift_option"`
@@ -110,7 +115,7 @@ type GetOrderItemsResponse struct {
 		ProductDetailURL      string  `json:"product_detail_url"`
 		PromisedShippingTime  string  `json:"promised_shipping_time"`
 		PurchaseOrderID       string  `json:"purchase_order_id"`
-		VoucherSeller         int     `json:"voucher_seller"`
+		VoucherSeller         float64 `json:"voucher_seller"`
 		ShippingType          string  `json:"shipping_type"`
 		CreatedAt             string  `json:"created_at"`
 		VoucherCode           string  `json:"voucher_code"`
@@ -158,7 +163,19 @@ func (s *LazadaClient) GetOrders(params GetOrdersParams) (*GetOrdersResponse, er
 	q.Add(ctimestamp, fmt.Sprintf("%d000", t.Unix()))
 	q.Add(caccessToken, s.accessToken)
 	q.Add(csignMethod, csha256)
-	q.Add(ccreatedAfter, params.CreatedAfter)
+	if params.CreatedAfter != "" {
+		q.Add(ccreatedAfter, params.CreatedAfter)
+	}
+	if params.CreatedBefore != "" {
+		q.Add(ccreatedBefore, params.CreatedBefore)
+	}
+	if params.UpdatedAfter != "" {
+		q.Add(cupdatedAfter, params.UpdatedAfter)
+	}
+	if params.UpdatedBefore != "" {
+		q.Add(cupdatedBefore, params.UpdatedBefore)
+	}
+
 	q.Add(climit, params.Limit)
 	q.Add(coffset, params.Offset)
 
