@@ -180,7 +180,7 @@ func (s *LazadaClient) GetOrders(params GetOrdersParams) (*GetOrdersResponse, er
 
 	q.Add(climit, params.Limit)
 	q.Add(coffset, params.Offset)
-	log.Printf("params.SortBy: %s\n", params.SortBy)
+
 	if params.SortBy != "" {
 		q.Add(sortBy, params.SortBy)
 	}
