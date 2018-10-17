@@ -26,6 +26,7 @@ const (
 	corderID       = "order_id"
 	climit         = "limit"
 	coffset        = "offset"
+	sortBy         = "sort_by"
 )
 
 // GetOrdersParams uses when CallGetOrders
@@ -37,6 +38,7 @@ type GetOrdersParams struct {
 
 	Limit  string
 	Offset string
+	SortBy string
 }
 
 // GetOrdersResponse responses from Lazada open platform
@@ -178,6 +180,10 @@ func (s *LazadaClient) GetOrders(params GetOrdersParams) (*GetOrdersResponse, er
 
 	q.Add(climit, params.Limit)
 	q.Add(coffset, params.Offset)
+	log.Printf("params.SortBy: %s\n", params.SortBy)
+	if params.SortBy != "" {
+		q.Add(sortBy, params.SortBy)
+	}
 
 	signString := sign(q, uri, s.appSecret)
 	q.Add(csign, signString)
