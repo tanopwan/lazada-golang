@@ -8,6 +8,7 @@ var getOrdersURI = "/orders/get"
 var getOrderItemsURI = "/order/items/get"
 var getProductsURI = "/products/get"
 var postAuthURI = "/auth/token/create"
+var postAuthRefreshURI = "/auth/token/refresh"
 
 // HTTPClient is client that implements Do
 type HTTPClient interface {
