@@ -52,7 +52,7 @@ func TestRefreshAccessTokenSuccess(t *testing.T) {
 	clientMock := ClientMock{Body: body}
 	testService := client.NewLazadaClientEx(appKey, appSecret, &clientMock)
 
-	response, err := testService.RefreshAccessToken("")
+	response, err := testService.RefreshAccessToken()
 	if err != nil {
 		t.Error(err.Error())
 	}
