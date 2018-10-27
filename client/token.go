@@ -103,14 +103,14 @@ func (s *LazadaClient) GetAccessToken(authCode string) (*PostAuthTokenCreateResp
 }
 
 // RefreshAccessToken refresh access_token using refresh_token
-func (s *LazadaClient) RefreshAccessToken(refreshToken string) (*PostAuthTokenRefreshResponse, error) {
+func (s *LazadaClient) RefreshAccessToken() (*PostAuthTokenRefreshResponse, error) {
 	t := time.Now()
 
 	data := url.Values{}
 	data.Set("app_key", s.appKey)
 	data.Set("timestamp", fmt.Sprintf("%d000", t.Unix()))
 	data.Set("sign_method", csha256)
-	data.Set("refresh_token", refreshToken)
+	data.Set("refresh_token", s.refreshToken)
 
 	data.Set("sign", sign(data, postAuthRefreshURI, s.appSecret))
 
