@@ -106,6 +106,9 @@ type GetOrdersResponse struct {
 	RequestID string `json:"request_id"`
 }
 
+// ErrTokenExpired token is expired
+var ErrTokenExpired = fmt.Errorf("code is not success : IllegalAccessToken")
+
 // GetOrderItemsResponse responses from Lazada open platform
 type GetOrderItemsResponse struct {
 	Data []struct {
@@ -216,6 +219,10 @@ func (s *LazadaClient) GetOrders(params GetOrdersParams) (*GetOrdersResponse, er
 		return &res, nil
 	}
 
+	if res.Code == "IllegalAccessToken" {
+		return nil, ErrTokenExpired
+	}
+
 	return nil, fmt.Errorf("code is not success : %s", res.Code)
 }
 
@@ -252,6 +259,7 @@ func (s *LazadaClient) GetOrderItems(params GetOrderItemsParams) (*GetOrderItems
 		return nil, err
 	}
 	defer response.Body.Close()
+
 	var jsonRes GetOrderItemsResponse
 	err = json.NewDecoder(response.Body).Decode(&jsonRes)
 	if err != nil {
@@ -261,5 +269,6 @@ func (s *LazadaClient) GetOrderItems(params GetOrderItemsParams) (*GetOrderItems
 
 	res, _ := json.Marshal(jsonRes)
 	log.Printf("GetOrderItems response: %s\n", string(res))
+
 	return &jsonRes, nil
 }
