@@ -17,9 +17,10 @@ type HTTPClient interface {
 
 // LazadaClient is wrapper for Lazada API
 type LazadaClient struct {
-	appKey      string
-	appSecret   string
-	accessToken string
+	appKey       string
+	appSecret    string
+	accessToken  string
+	refreshToken string
 
 	client HTTPClient
 }
@@ -43,6 +44,7 @@ func NewLazadaClientEx(appKey string, appSecret string, client HTTPClient) *Laza
 }
 
 // SetAccessToken sets access token
-func (s *LazadaClient) SetAccessToken(accessToken string) {
+func (s *LazadaClient) SetAccessToken(accessToken string, refreshToken string) {
 	s.accessToken = accessToken
+	s.refreshToken = refreshToken
 }
